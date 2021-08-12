@@ -1,0 +1,1 @@
+# Django Framework project for GeekBrains educate
