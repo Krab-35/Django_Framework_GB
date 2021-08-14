@@ -10,8 +10,11 @@ def index(request):
 
 
 def load_json():
-    with open(r"./products/fixtures/products.json") as out_json:
-        return load(out_json)
+    try:
+        with open(r"./products/fixtures/products.json") as out_json:
+            return load(out_json)
+    except IOError:
+        return {"title": "GeekShop - Каталог", "products": [], }
 
 
 def products(request):
