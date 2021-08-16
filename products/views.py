@@ -14,9 +14,12 @@ def load_json():
         with open(r"./products/fixtures/products.json") as out_json:
             return load(out_json)
     except IOError:
-        return {"title": "GeekShop - Каталог", "products": [], }
+        return []
 
 
 def products(request):
-    context = load_json()
+    context = {
+        'title': 'GeekShop - Каталог',
+        'products': load_json(),
+    }
     return render(request, 'products/products.html', context)
