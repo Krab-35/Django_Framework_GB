@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from os import path
 from json import load
-from products.models import Product
+from products.models import Product, ProductCategory
 
 
 def index(request):
@@ -24,5 +24,6 @@ def products(request):
     context = {
         'title': 'GeekShop - Каталог',
         'products': Product.objects.all(),
+        'categories': ProductCategory.objects.all(),
     }
     return render(request, 'products/products.html', context)
