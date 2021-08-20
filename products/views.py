@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from os import path
 from json import load
+from products.models import Product
 
 
 def index(request):
@@ -19,8 +20,9 @@ def load_json():
 
 
 def products(request):
+
     context = {
         'title': 'GeekShop - Каталог',
-        'products': load_json(),
+        'products': Product.objects.all(),
     }
     return render(request, 'products/products.html', context)
