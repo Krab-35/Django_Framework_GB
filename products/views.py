@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from os import path
 from json import load
 
 
@@ -11,7 +12,7 @@ def index(request):
 
 def load_json():
     try:
-        with open(r"./products/fixtures/products.json") as out_json:
+        with open(path.join(path.dirname(__file__), 'fixtures/products.json'), encoding='utf-8') as out_json:
             return load(out_json)
     except IOError:
         return []
