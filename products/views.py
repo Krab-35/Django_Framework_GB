@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from json import load
+
+from products.models import Product, ProductCategory
 
 
 def index(request):
@@ -9,17 +10,11 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
-def load_json():
-    try:
-        with open(r"./products/fixtures/products.json") as out_json:
-            return load(out_json)
-    except IOError:
-        return []
-
-
 def products(request):
+
     context = {
         'title': 'GeekShop - Каталог',
-        'products': load_json(),
+        'products': Product.objects.all(),
+        'categories': ProductCategory.objects.all(),
     }
     return render(request, 'products/products.html', context)

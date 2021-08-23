@@ -14,11 +14,9 @@
 
                 <h1 class="my-4">GeekShop</h1>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">Новинки</a>
-                    <a href="#" class="list-group-item">Одежда</a>
-                    <a href="#" class="list-group-item">Обувь</a>
-                    <a href="#" class="list-group-item">Аксессуары</a>
-                    <a href="#" class="list-group-item">Подарки</a>
+                    {% for category in categories %}
+                        <a href="#" class="list-group-item">{{ category.name }}</a>
+                    {% endfor %}
                 </div>
 
             </div>
@@ -61,7 +59,7 @@
                                 <div class="card h-100">
                                     <a href="#">
                                         <img class="card-img-top"
-                                             src="{% static product.image_address %}"
+                                             src="/media/{{ product.image }}"
                                              alt="">
                                     </a>
                                     <div class="card-body">
@@ -72,15 +70,9 @@
                                         <p class="card-text">{{ product.description }}</p>
                                     </div>
                                     <div class="card-footer text-center">
-                                        {% if product.added_to_basket %}
-                                            <button type="button" class="btn btn-outline-danger">
-                                                Удалить из корзины
-                                            </button>
-                                        {% else %}
-                                            <button type="button" class="btn btn-outline-success">
+                                        <button type="button" class="btn btn-outline-success">
                                                 Отправить в корзину
-                                            </button>
-                                        {% endif %}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
