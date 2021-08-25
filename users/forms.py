@@ -16,12 +16,18 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserRegistrationForm(UserCreationForm):
+
+    def name_check(self):
+        if self[0] != self[0].upper():
+            raise forms.ValidationError('Введите имя с большой буквы')
+        return self
+
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите имя пользователя'}))
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите адрес эл. почты'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control py-4', 'placeholder': 'Введите имя'}))
+        'class': 'form-control py-4', 'placeholder': 'Введите имя'}), validators=[name_check])
     last_name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите фамилию'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={
