@@ -16,18 +16,12 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserRegistrationForm(UserCreationForm):
-
-    def name_check(self):
-        if self[0] != self[0].upper():
-            raise forms.ValidationError('Введите имя с большой буквы')
-        return self
-
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите имя пользователя'}))
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите адрес эл. почты'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control py-4', 'placeholder': 'Введите имя'}), validators=[name_check])
+        'class': 'form-control py-4', 'placeholder': 'Введите имя'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Введите фамилию'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={
@@ -38,3 +32,14 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+
+    def clean_first_name(self):
+        data = self.cleaned_data['first_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите имя с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В имени присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели имя с маленькой буквы с содержанием цифр')
+        return data
