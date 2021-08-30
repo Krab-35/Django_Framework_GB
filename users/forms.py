@@ -41,7 +41,18 @@ class UserRegistrationForm(UserCreationForm):
         elif data[0] == data[0].upper() and check_alpha is False:
             raise forms.ValidationError('В имени присутствуют цифры')
         elif data[0] != data[0].upper() and check_alpha is False:
-            raise forms.ValidationError('Вы ввели имя с маленькой буквы с содержанием цифр')
+            raise forms.ValidationError('Вы ввели имя с маленькой, буквы с содержанием цифр')
+        return data
+
+    def clean_last_name(self):
+        data = self.cleaned_data['last_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите Фамилию с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В Фамилии присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели Фамилию с маленькой буквы, с содержанием цифр')
         return data
 
 
@@ -60,3 +71,25 @@ class UserProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'image', 'username', 'email')
+
+    def clean_first_name(self):
+        data = self.cleaned_data['first_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите имя с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В имени присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели имя с маленькой буквы, с содержанием цифр')
+        return data
+
+    def clean_last_name(self):
+        data = self.cleaned_data['last_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите Фамилию с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В Фамилии присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели Фамилию с маленькой буквы, с содержанием цифр')
+        return data
