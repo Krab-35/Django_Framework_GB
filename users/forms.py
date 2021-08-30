@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
 from users.models import User
 from django import forms
@@ -41,5 +41,55 @@ class UserRegistrationForm(UserCreationForm):
         elif data[0] == data[0].upper() and check_alpha is False:
             raise forms.ValidationError('В имени присутствуют цифры')
         elif data[0] != data[0].upper() and check_alpha is False:
-            raise forms.ValidationError('Вы ввели имя с маленькой буквы с содержанием цифр')
+            raise forms.ValidationError('Вы ввели имя с маленькой, буквы с содержанием цифр')
+        return data
+
+    def clean_last_name(self):
+        data = self.cleaned_data['last_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите Фамилию с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В Фамилии присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели Фамилию с маленькой буквы, с содержанием цифр')
+        return data
+
+
+class UserProfileForm(UserChangeForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4'}))
+    image = forms.ImageField(widget=forms.FileInput(attrs={
+        'class': 'custom-file-input'}), required=False)
+    username = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4', 'readonly': True}))
+    email = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4', 'readonly': True}))
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'image', 'username', 'email')
+
+    def clean_first_name(self):
+        data = self.cleaned_data['first_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите имя с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В имени присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели имя с маленькой буквы, с содержанием цифр')
+        return data
+
+    def clean_last_name(self):
+        data = self.cleaned_data['last_name']
+        check_alpha = data.isalpha()
+        if data[0] != data[0].upper() and check_alpha is True:
+            raise forms.ValidationError('Введите Фамилию с большой буквы')
+        elif data[0] == data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('В Фамилии присутствуют цифры')
+        elif data[0] != data[0].upper() and check_alpha is False:
+            raise forms.ValidationError('Вы ввели Фамилию с маленькой буквы, с содержанием цифр')
         return data
