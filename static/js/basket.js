@@ -9,4 +9,15 @@ window.onload = function() {
 			},
 		});
 	});
+
+	$('.basket_add').on('click', 'button[type="number"]', function () {
+		var target = event.target;
+
+		$.ajax({
+			url: '/baskets/add/' + target.name,
+			success: function (data) {
+				$('.basket_add').html(data.result)
+			},
+		});
+	});
 }
