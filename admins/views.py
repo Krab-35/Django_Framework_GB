@@ -2,9 +2,10 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import user_passes_test
 
-from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm
+from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, AdminProductCategory
 
 from users.models import User
+from products.models import Product, ProductCategory
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -52,3 +53,40 @@ def admin_user_delete(request, id):
     user.is_active = False
     user.save()
     return HttpResponseRedirect(reverse('admins:admin_users'))
+
+
+def admin_product_category(request):
+    context = {
+        'title': 'GeekShop - Категории товаров',
+        'categories': ProductCategory.objects.all(),
+    }
+    return render(request, 'admins/admin-product-category.html', context)
+
+
+def admin_product_category_update(request, id):
+    selected_category = ProductCategory.objects.get(id=id)
+    if request.method == 'POST':
+        form = AdminProductCategory(instance=selected_category, files=request.FILES, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_product_category'))
+        else:
+            form = AdminProductCategory(instance=selected_category)
+        context = {
+            'title': 'GeekShop - Редактирование пользователя',
+            'selected_category': selected_category,
+            'form': form,
+        }
+    return render(request, 'admins/admin-product-category-update-delete.html', context)
+
+
+def admin_product_category_create(request):
+    if request.method == 'POST':
+        form = AdminProductCategory(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('admins:admin_product_category'))
+    else:
+        form = AdminProductCategory()
+    context = {'title': 'GeekShop - Создание категории', 'form': form}
+    return render(request, 'admins/admin-product-category-create.html', context)

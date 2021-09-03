@@ -6,12 +6,14 @@
 			<h1 class="mt-4">Создание пользователя</h1>
 			<form action="{% url 'admins:admin_users_create' %}" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
-			<div class="form-row">
+				<div class="form-row">
 					<div class="col-lg-6">
 						<div class="form-group">
 							<label class="small mb-1" for="{{ form.first_name.id_for_label }}">Имя</label>
 							{{ form.first_name }}
 						</div>
+					</div>
+					<div class="form-row">
 					</div>
 					<div class="col-lg-6">
 						<div class="form-group">

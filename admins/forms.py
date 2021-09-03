@@ -3,6 +3,8 @@ from django import forms
 
 from users.models import User
 
+from products.models import Product, ProductCategory
+
 
 class UserAdminRegistrationForm(UserRegistrationForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={
@@ -18,3 +20,15 @@ class UserAdminProfileForm(UserProfileForm):
         'class': 'form-control py-4', 'readonly': False}))
     email = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'readonly': False}))
+
+
+class AdminProductCategory(forms.ModelForm):
+    class Meta:
+        model = ProductCategory
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
