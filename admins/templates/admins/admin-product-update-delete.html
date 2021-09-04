@@ -34,7 +34,11 @@
 							<div class="form-row">
 								<div class="col-lg-6" style="margin-top: 20px;">
 									<label class="small mb-1" for="{{ form.is_active.id_for_label }}">Активный</label>
-									<input type="checkbox" name="is_active" id="form.is_active" checked>
+									{% if selected_product.is_active %}
+										<input type="checkbox" name="is_active" id="form.is_active" checked>
+									{% else %}
+										<input type="checkbox" name="is_active" id="form.is_active">
+									{% endif %}
 								</div>
 							</div>
 						<div class="form-row">
