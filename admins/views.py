@@ -144,24 +144,6 @@ class ProductCreateView(CreateView):
         return super(ProductCreateView, self).dispatch(request, *args, **kwargs)
 
 
-# @user_passes_test(lambda u: u.is_staff)
-# def admin_product_update(request, id):
-#     selected_product = Product.objects.get(id=id)
-#     if request.method == 'POST':
-#         form = AdminProduct(instance=selected_product, files=request.FILES, data=request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return HttpResponseRedirect(reverse('admins:admin_product'))
-#     else:
-#         form = AdminProduct(instance=selected_product)
-#     context = {
-#         'title': 'GeekShop - Редактирование товара',
-#         'selected_product': selected_product,
-#         'form': form,
-#     }
-#     return render(request, 'admins/admin-product-update-delete.html', context)
-
-
 class ProductUpdateView(UpdateView):
     model = Product
     template_name = 'admins/admin-product-update-delete.html'
@@ -172,13 +154,6 @@ class ProductUpdateView(UpdateView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductUpdateView, self).dispatch(request, *args, **kwargs)
-
-
-# @user_passes_test(lambda u: u.is_staff)
-# def admin_product_delete(request, id):
-#     selected_product = Product.objects.get(id=id)
-#     selected_product.delete()
-#     return HttpResponseRedirect(reverse('admins:admin_product'))
 
 
 class ProductDeleteView(DeleteView):
