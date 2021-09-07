@@ -3,9 +3,9 @@
 {% block content %}
 	<main>
 		<div class="container-fluid">
-			<h1 class="mt-4">Редактирование категории | {{ selected_category.name }}</h1>
+			<h1 class="mt-4">Редактирование категории | {{ object.name }}</h1>
 			<div class="card-body">
-				<form action="{% url 'admins:admin_product_category_update' selected_category.id %}" method="post">
+				<form action="{% url 'admins:admin_product_category_update' object.id %}" method="post">
 					{% csrf_token %}
 					<div class="form-row">
 						<div class="col-lg-6">
@@ -15,7 +15,7 @@
 								<div class="form-row">
 									<div class="col-lg-12" style="margin-top: 33px;">
 										<label class="small mb-1" for="{{ form.is_active.id_for_label }}">Активный</label>
-										{% if selected_category.is_active %}
+										{% if object.is_active %}
 											<input type="checkbox" name="is_active" id="form.is_active" checked>
 										{% else %}
 											<input type="checkbox" name="is_active" id="form.is_active">
@@ -40,8 +40,10 @@
 				</form>
 				<div class="row">
 					<div class="col-lg-12" style="margin-top: 33px;">
-						<a class="btn btn-danger btn-block"
-						   href="{% url 'admins:admin_product_category_delete' selected_category.id %}">Удалить</a>
+						<form action="{% url 'admins:admin_product_category_delete' object.id %}" method="post">
+							{% csrf_token %}
+							<input class="btn btn-danger btn-block" type="submit" value="Удалить">
+						</form>
 					</div>
 				</div>
 			</div>
