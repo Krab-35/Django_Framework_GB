@@ -2,7 +2,7 @@ from django.urls import path
 
 from admins.views import UserIndexView, UserListView, UserCreateView, UserUpdateView, UserDeleteView,\
     ProductCategoryListView, ProductCategoryCreateView, ProductCategoryUpdateView, \
-    ProductCategoryDeleteView, admin_product, admin_product_create, admin_product_update, admin_product_delete
+    ProductCategoryDeleteView, ProductListView, ProductCreateView, ProductUpdateView, ProductDeleteView
 
 app_name = 'admins'
 
@@ -18,8 +18,8 @@ urlpatterns = [
     path('category-update/<int:pk>/', ProductCategoryUpdateView.as_view(), name='admin_product_category_update'),
     path('category-delete/<int:pk>/', ProductCategoryDeleteView.as_view(), name='admin_product_category_delete'),
 
-    path('product/', admin_product, name='admin_product'),
-    path('product-create/', admin_product_create, name='admin_product_create'),
-    path('product-update/<int:id>/', admin_product_update, name='admin_product_update'),
-    path('product-delete/<int:id>/', admin_product_delete, name='admin_product_delete'),
+    path('product/', ProductListView.as_view(), name='admin_product'),
+    path('product-create/', ProductCreateView.as_view(), name='admin_product_create'),
+    path('product-update/<int:pk>/', ProductUpdateView.as_view(), name='admin_product_update'),
+    path('product-delete/<int:pk>/', ProductDeleteView.as_view(), name='admin_product_delete'),
 ]
