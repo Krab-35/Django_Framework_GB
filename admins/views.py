@@ -20,7 +20,7 @@ class UserIndexView(TemplateView):
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
-        return super(UserListView, self).dispatch(request, *args, **kwargs)
+        return super(TemplateView, self).dispatch(request, *args, **kwargs)
 
 
 class UserListView(ListView):
@@ -45,7 +45,7 @@ class UserCreateView(CreateView):
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
-        return super(UserListView, self).dispatch(request, *args, **kwargs)
+        return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
 
 class UserUpdateView(UpdateView):
@@ -56,7 +56,7 @@ class UserUpdateView(UpdateView):
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
-        return super(UserListView, self).dispatch(request, *args, **kwargs)
+        return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
 
 
 class UserDeleteView(DeleteView):
@@ -72,7 +72,7 @@ class UserDeleteView(DeleteView):
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
-        return super(UserListView, self).dispatch(request, *args, **kwargs)
+        return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
 
 
 @user_passes_test(lambda u: u.is_staff)
