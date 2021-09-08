@@ -1,28 +1,29 @@
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import TemplateView
+from django.views.generic.list import ListView
 
 from products.models import Product, ProductCategory
 
 
-def index(request):
-    context = {
-        'title': 'GeekShop',
-    }
-    return render(request, 'products/index.html', context)
+class IndexTemplateView(TemplateView):
+    template_name = 'products/index.html'
+    extra_context = {'title': 'GeekShop'}
 
 
-def products(request, category_id=None, page=1):
-    context = {
-        'title': 'GeekShop - Каталог',
-        'categories': ProductCategory.objects.all(),
-    }
-    products = Product.objects.filter(category_id=category_id) if category_id else Product.objects.all()
-    paginator = Paginator(products, per_page=3)
-    try:
-        products_paginator = paginator.page(page)
-    except PageNotAnInteger:
-        products_paginator = paginator.page(1)
-    except EmptyPage:
-        products_paginator = paginator.page(paginator.num_pages)
-    context['products'] = products_paginator
-    return render(request, 'products/products.html', context)
+class ProductListView(ListView):
+    model = Product
+    template_name = 'products/products.html'
+    paginate_by = 3
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        self.categories = ProductCategory.objects.all()
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop - Админ | Пользователи'
+        context['categories'] = self.categories
+        return context
+
+    def get_queryset(self):
+        qs = super(ProductListView, self).get_queryset()
+        try:
+            return qs.filter(category=self.kwargs['pk'])
+        except KeyError:
+            return qs
