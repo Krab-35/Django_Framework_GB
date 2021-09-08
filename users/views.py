@@ -1,54 +1,67 @@
-from django.shortcuts import render, HttpResponseRedirect
-from django.urls import reverse
+from django.shortcuts import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.contrib import auth
 from django.contrib import messages
 
+from django.views.generic import FormView
+from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.views import LogoutView
+
+from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
 
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user and user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-    else:
-        form = UserLoginForm()
-    context = {'title': 'GeekShop - Авторизация', 'form': form}
-    return render(request, 'users/login.html', context)
+class LoginFormView(FormView):
+    form_class = UserLoginForm
+    template_name = 'users/login.html'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        auth.login(
+            self.request, auth.authenticate(
+                username=self.request.POST['username'],
+                password=self.request.POST['password']
+            )
+        )
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
-def registration(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('users:login'))
-    else:
-        form = UserRegistrationForm()
-    context = {'title': 'GeekShop - Регистрация', 'form': form}
-    return render(request, 'users/registration.html', context)
+class RegistrationCreateView(CreateView):
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'users/registration.html'
+    success_url = reverse_lazy('users:login')
+    extra_context = {'title': 'GeekShop - Регистрация'}
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Вы успешно зарегистрировались!')
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+class LogoutLogoutView(LogoutView):
+    next_page = reverse_lazy('index')
 
 
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно обновили данные!')
-            return HttpResponseRedirect(reverse('users:profile'))
-    else:
-        form = UserProfileForm(instance=request.user)
-    context = {'title': 'GeekShop - Личный кабинет', 'form': form, 'baskets': Basket.objects.filter(user=request.user)}
-    return render(request, 'users/profile.html', context)
+class ProfileUpdateView(UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/profile.html'
+    success_url = reverse_lazy('users:profile')
+    extra_context = {'title': 'GeekShop - Личный кабинет'}
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        self.basket = Basket.objects.filter(user=self.request.user)
+        context = super(ProfileUpdateView, self).get_context_data(**kwargs)
+        context['baskets'] = self.basket
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Вы успешно обновились!')
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('users:profile', kwargs={'pk': self.object.id})
