@@ -1,7 +1,10 @@
-from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
 from django.contrib import auth
 from django.contrib import messages
+
+from django.conf import settings
+from django.core.mail import send_mail
 
 from django.views.generic import FormView
 from django.views.generic.edit import CreateView, UpdateView
@@ -65,3 +68,48 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.id})
+
+
+def send_verify_mail(user):
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+
+    title = f'Подтверждение учетной записи {user.username}'
+
+    message = f'Для подтверждения учетной записи {user.username} на портале {settings.DOMAIN_NAME}' \
+              f' пройдите по ссылке:\n{settings.DOMAIN_NAME}{verify_link}'
+
+    return send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, activation_key):
+    try:
+        user = User.objects.get(email=email)
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+            return render(request, 'users/verification.html')
+        else:
+            print(f'error activation user: {user}')
+            return render(request, 'users/verification.html')
+    except Exception as err:
+        print(f'error activation user: {err.args}')
+        return HttpResponseRedirect(reverse('index'))
+
+
+def registration(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            if send_verify_mail(user):
+                # print('Сообщение подтверждения отправлено')
+                messages.success(request, 'Сообщение подтверждения отправлено')
+            else:
+                # print('ошибка отправки сообщения')
+                messages.success(request, 'ошибка отправки сообщения')
+            return HttpResponseRedirect(reverse('users:login'))
+    else:
+        form = UserRegistrationForm()
+    context = {'title': 'GeekShop - Регистрация', 'form': form}
+    return render(request, 'users/registration.html', context)
