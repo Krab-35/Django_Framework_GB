@@ -37,10 +37,14 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:profile' user.id %}">{{ user.username }}
-                            <i class="fas fa-user-circle"></i>
+                        <a class="nav-link" href="{% url 'users:profile' user.id %}">
+                            {{ user.username }} <i class="fas fa-user-circle"></i>
+                            {% if baskets %}
+                                {{ baskets.0.total_sum }} руб. ({{ baskets.0.total_quantity }} шт.)
+                            {% else %}
+                                Корзина пуста
+                            {% endif %}
                         </a>
-                    </li>
                     {% if user.is_staff %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'admins:index' %}">
@@ -48,6 +52,7 @@
                             </a>
                         </li>
                     {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i class="fas fa-sign-out-alt"></i>
                         </a>
