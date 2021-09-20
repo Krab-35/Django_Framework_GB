@@ -20,6 +20,9 @@ def basket_add(request, product_id):
             basket = baskets.first()
             basket.quantity += 1
             basket.save()
+        context = {'baskets': baskets}
+        result = render_to_string('baskets/basket_load.html', context)
+        return JsonResponse({'result': result})
 
 
 @login_required
@@ -40,4 +43,5 @@ def basket_edit(request, id, quantity):
         baskets = Basket.objects.filter(user=request.user)
         context = {'baskets': baskets}
         result = render_to_string('baskets/baskets.html', context)
-        return JsonResponse({'result': result})
+        result_load = render_to_string('baskets/basket_load.html', context)
+        return JsonResponse({'result': result, 'result_load': result_load})
