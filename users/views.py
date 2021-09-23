@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.shortcuts import HttpResponseRedirect, render
 from django.urls import reverse, reverse_lazy
 from django.contrib import auth
@@ -11,7 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.views import LogoutView
 
 from users.models import User
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileEditForm
 from baskets.models import Basket
 
 
@@ -55,12 +57,6 @@ class ProfileUpdateView(UpdateView):
     success_url = reverse_lazy('users:profile')
     extra_context = {'title': 'GeekShop - Личный кабинет'}
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        self.basket = Basket.objects.filter(user=self.request.user)
-        context = super(ProfileUpdateView, self).get_context_data(**kwargs)
-        context['baskets'] = self.basket
-        return context
-
     def form_valid(self, form):
         messages.success(self.request, 'Вы успешно обновились!')
         super().form_valid(form)
@@ -68,6 +64,28 @@ class ProfileUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.id})
+
+
+@transaction.atomic
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+            profile_form.save()
+            return HttpResponseRedirect(reverse('users:profile'))
+    else:
+        form = UserProfileForm(instance=request.user)
+        profile_form = UserProfileEditForm(instance=request.user.userprofile)
+
+    context = {
+        'form': form,
+        'profile_form': profile_form,
+        'title': 'GeekShop - Личный кабинет',
+    }
+    return render(request, 'users/profile.html', context)
 
 
 def send_verify_mail(user):
@@ -103,10 +121,8 @@ def registration(request):
         if form.is_valid():
             user = form.save()
             if send_verify_mail(user):
-                # print('Сообщение подтверждения отправлено')
                 messages.success(request, 'Сообщение подтверждения отправлено')
             else:
-                # print('ошибка отправки сообщения')
                 messages.success(request, 'ошибка отправки сообщения')
             return HttpResponseRedirect(reverse('users:login'))
     else:

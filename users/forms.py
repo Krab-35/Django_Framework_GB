@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
-from users.models import User
+from users.models import User, UserProfile
 from django import forms
 
 import hashlib
@@ -105,3 +105,14 @@ class UserProfileForm(UserChangeForm):
         elif data[0] != data[0].upper() and check_alpha is False:
             raise forms.ValidationError('Вы ввели Фамилию с маленькой буквы, с содержанием цифр')
         return data
+
+
+class UserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'aboutme', 'gender')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileEditForm, self).__init__(*args, **kwargs)
+        for fild_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
