@@ -9,7 +9,7 @@ from django.dispatch import receiver
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='users_images', blank=True, null=True)
-    age = models.PositiveIntegerField(verbose_name='возраст', blank=True, null=True)
+    age = models.PositiveIntegerField(verbose_name='возраст', null=True)
 
     activation_key = models.CharField(max_length=128, blank=True)
     activation_key_expires = models.DateTimeField(default=(now() + timedelta(hours=48)))
@@ -55,6 +55,12 @@ class UserProfile(models.Model):
         verbose_name='о себе',
         max_length=512,
         blank=True,
+    )
+
+    bdate = models.DateField(
+        verbose_name='день рождения',
+        blank=True,
+        default='01.01.1998',
     )
 
     @receiver(post_save, sender=User)
