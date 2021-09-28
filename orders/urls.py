@@ -1,9 +1,14 @@
 from django.urls import path
 
+import orders.views as orders
+
 app_name = 'orders'
 
 urlpatterns = [
-    # path('add/<int:product_id>', basket_add, name='basket_add'),
-    # path('remove/<int:id>', basket_remove, name='basket_remove'),
-    # path('edit/<int:id>/<int:quantity>/', basket_edit, name='basket_edit'),
+    path('', orders.OrderList.as_view(), name='orders_list'),
+    path('forming/complete/<int:pk>/', orders.order_forming_complete, name='order_forming_complete'),
+    path('create/', orders.OrderCreate.as_view(), name='order_create'),
+    path('read/<int:pk>/', orders.OrderRead.as_view(), name='order_read'),
+    path('update/<int:pk>/', orders.OrderUpdate.as_view(), name='order_update'),
+    path('delete/<int:pk>/', orders.OrderDelete.as_view(), name='order_delete'),
 ]
