@@ -57,12 +57,6 @@ class UserProfile(models.Model):
         blank=True,
     )
 
-    bdate = models.DateField(
-        verbose_name='день рождения',
-        blank=True,
-        default='01.01.1998',
-    )
-
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
