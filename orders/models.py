@@ -3,6 +3,8 @@ from django.db import models
 
 from products.models import Product
 
+from django.utils.functional import cached_property
+
 
 class OrderItemQuerySet(models.QuerySet):
     def delete(self, *args, **kwargs):
@@ -55,21 +57,24 @@ class Order(models.Model):
     def __str__(self):
         return 'Текущий заказ: {}'.format(self.id)
 
-    def get_total_quantity(self):
-        items = self.orderitems.select_related()
-        return sum(list(map(lambda x: x.quantity, items)))
+    @cached_property
+    def get_orderitems_cached(self):
+        return self.orderitems.select_related()
 
     def get_product_type_quantity(self):
-        items = self.orderitems.select_related()
+        items = self.get_orderitems_cached
         return len(items)
 
-    def get_total_cost(self):
-        items = self.orderitems.select_related()
-        return sum(list(map(lambda x: x.quantity * x.product.price, items)))
+    def get_summary(self):
+        items = self.get_orderitems_cached
+        return {
+            'total_cost': sum(list(map(lambda x: x.quantity * x.product.price, items))),
+            'total_quantity': sum(list(map(lambda x: x.quantity, items))),
+        }
 
     # переопределяем метод, удаляющий объект
     def delete(self):
-        for item in self.orderitems.select_related():
+        for item in self.get_orderitems_cached:
             item.product.quantity += item.quantity
             item.product.save()
 
