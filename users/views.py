@@ -66,6 +66,7 @@ class ProfileUpdateView(UpdateView):
         return reverse('users:profile', kwargs={'pk': self.object.id})
 
 
+@login_required
 @transaction.atomic
 def profile(request):
     if request.method == 'POST':
