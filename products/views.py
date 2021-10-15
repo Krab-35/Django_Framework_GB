@@ -27,6 +27,7 @@ class IndexTemplateView(TemplateView):
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
+    queryset = Product.get_items()
     paginate_by = 3
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -34,6 +35,7 @@ class ProductListView(ListView):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Админ | Пользователи'
         context['categories'] = self.categories
+
         return context
 
     def get_queryset(self):

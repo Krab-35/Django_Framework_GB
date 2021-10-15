@@ -65,6 +65,10 @@ class Order(models.Model):
         items = self.get_orderitems_cached
         return len(items)
 
+    def get_total_cost(self):
+        items = self.get_orderitems_cached
+        return sum(list(map(lambda x: x.quantity * x.product.price, items)))
+
     def get_summary(self):
         items = self.get_orderitems_cached
         return {

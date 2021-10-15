@@ -66,6 +66,7 @@ class ProfileUpdateView(UpdateView):
         return reverse('users:profile', kwargs={'pk': self.object.id})
 
 
+@login_required
 @transaction.atomic
 def profile(request):
     if request.method == 'POST':
@@ -75,6 +76,7 @@ def profile(request):
         if form.is_valid() and profile_form.is_valid():
             form.save()
             profile_form.save()
+            messages.success(request, 'Вы успешно обновились!')
             return HttpResponseRedirect(reverse('users:profile'))
     else:
         form = UserProfileForm(instance=request.user)
