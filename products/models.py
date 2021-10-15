@@ -9,6 +9,10 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def get_items():
+        return ProductCategory.objects.filter(is_active=True).order_by('name')
+
 
 class Product(models.Model):
     name = models.CharField(max_length=256)
@@ -22,5 +26,6 @@ class Product(models.Model):
     def __str__(self):
         return f'{self.name} | {self.category.name}'
 
+    @staticmethod
     def get_items():
         return Product.objects.filter(is_active=True).order_by('category', 'name')

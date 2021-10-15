@@ -42,7 +42,7 @@ class UserIndexView(TemplateView):
     template_name = 'admins/index.html'
     extra_context = {'title': 'GeekShop - Админ'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(TemplateView, self).dispatch(request, *args, **kwargs)
 
@@ -56,7 +56,7 @@ class UserListView(ListView):
         context['title'] = 'GeekShop - Админ | Пользователи'
         return context
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(UserListView, self).dispatch(request, *args, **kwargs)
 
@@ -68,7 +68,7 @@ class UserCreateView(CreateView):
     success_url = reverse_lazy('admins:admin_users')
     extra_context = {'title': 'GeekShop - Админ | Создание пользователя'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
@@ -80,7 +80,7 @@ class UserUpdateView(UpdateView):
     success_url = reverse_lazy('admins:admin_users')
     extra_context = {'title': 'GeekShop - Админ | Редактирование пользователя'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
 
@@ -96,7 +96,7 @@ class UserDeleteView(DeleteView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
 
@@ -106,7 +106,7 @@ class ProductCategoryListView(ListView):
     template_name = 'admins/admin-product-category.html'
     extra_context = {'title': 'GeekShop - Админ | Категории товаров'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductCategoryListView, self).dispatch(request, *args, **kwargs)
 
@@ -118,7 +118,7 @@ class ProductCategoryCreateView(CreateView):
     success_url = reverse_lazy('admins:admin_product_category')
     extra_context = {'title': 'GeekShop - Админ | Создание категории'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductCategoryCreateView, self).dispatch(request, *args, **kwargs)
 
@@ -139,7 +139,7 @@ class ProductCategoryUpdateView(UpdateView):
 
         return super().form_valid(form)
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductCategoryUpdateView, self).dispatch(request, *args, **kwargs)
 
@@ -149,7 +149,7 @@ class ProductCategoryDeleteView(DeleteView):
     template_name = 'admins/admin-product-category-update-delete.html'
     success_url = reverse_lazy('admins:admin_product_category')
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductCategoryDeleteView, self).dispatch(request, *args, **kwargs)
 
@@ -160,7 +160,7 @@ class ProductListView(ListView):
     template_name = 'admins/admin-product.html'
     extra_context = {'title': 'GeekShop - Админ | Товары'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductListView, self).dispatch(request, *args, **kwargs)
 
@@ -172,7 +172,7 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('admins:admin_product')
     extra_context = {'title': 'GeekShop - Админ | Товары'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductCreateView, self).dispatch(request, *args, **kwargs)
 
@@ -184,7 +184,7 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy('admins:admin_product')
     extra_context = {'title': 'GeekShop - Админ | Редактирование товара'}
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductUpdateView, self).dispatch(request, *args, **kwargs)
 
@@ -194,6 +194,6 @@ class ProductDeleteView(DeleteView):
     template_name = 'admins/admin-product-update-delete.html'
     success_url = reverse_lazy('admins:admin_product')
 
-    @method_decorator(user_passes_test(lambda u: u.is_staff, login_url='/users/login/'))
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProductDeleteView, self).dispatch(request, *args, **kwargs)

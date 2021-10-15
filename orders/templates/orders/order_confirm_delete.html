@@ -2,15 +2,27 @@
 {% load static %}
 
 {% block content %}
-   <div class="category_delete">
-       <div class="h1">Уверены, что хотите удалить?</div>
-       {% include 'orders/includes/inc_order_summary.html' %}
-       <form action="{% url 'orders:order_delete' object.pk %}" method="post">
-           {% csrf_token %}
-           <input class="btn btn-danger" type="submit" value="удалить">
-       </form>
-       <button class="btn btn-success">
-           <a href="{% url 'orders:orders_list' %}">отмена</a>
-       </button>
-   </div>
+    <main>
+        <div class="container-fluid">
+            <h1 class="mt-4">Удаление заказа</h1>
+			<div class="card mb-4">
+                <div class="category_delete">
+                    <div class="card-header">
+                        Уверены, что хотите удалить?
+                    </div>
+                    <div class="card-body">
+                        {% include 'orders/includes/inc_order_summary.html' %}
+
+                        <form action="{% url 'orders:order_delete' object.pk %}" method="post">
+                            {% csrf_token %}
+                            <input class="btn btn-danger btn-block" type="submit" value="удалить">
+                        </form>
+                        <button class="btn btn-success btn-block" style="margin-top: 12px;">
+                            <a href="{% url 'orders:orders_list' %}">отмена</a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}
